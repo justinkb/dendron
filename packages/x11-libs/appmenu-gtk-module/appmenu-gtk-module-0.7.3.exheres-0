@@ -1,0 +1,25 @@
+# Copyright 2019 Paul Mulders <justinkb@gmail.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require gsettings cmake
+
+SUMMARY="Application Menu GTK+ Module"
+
+DOWNLOADS="https://gitlab.com/vala-panel-project/vala-panel-appmenu/-/archive/${PV}/vala-panel-appmenu-${PV}.tar.gz"
+
+LICENCES="GPL-3"
+SLOT="0"
+PLATFORMS="~amd64"
+MYOPTIONS=""
+
+DEPENDENCIES="
+    build+run:
+        dev-libs/glib:2[>=2.50.0]
+        x11-libs/gtk+:3[>=3.22.0]
+        x11-libs/gtk+:2[>=2.24.0]
+"
+
+CMAKE_SOURCE="${WORKBASE}"/vala-panel-appmenu-${PV}/subprojects/${PN}
+
+DEFAULT_SRC_PREPARE_PATCHES=( "${FILES}"/cmake.patch )
+

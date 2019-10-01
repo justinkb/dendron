@@ -1,0 +1,29 @@
+# Copyright 2019 Paul Mulders <justinkb@gmail.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require github [ user=duncanthrax ]
+
+SUMMARY="Virtual network sound card for Microsoft Windows (ALSA receivers)"
+
+LICENCES="MS-PL"
+SLOT="0"
+PLATFORMS="~amd64"
+MYOPTIONS=""
+
+DEPENDENCIES="
+    build+run:
+        sys-sound/alsa-lib
+"
+
+src_compile() {
+    edo cd "${WORK}"/Receivers/alsa
+    emake CC=${CC} CFLAGS="${CFLAGS}"
+    edo cd "${WORK}"/Receivers/alsa-ivshmem
+    emake CC=${CC} CFLAGS="${CFLAGS}"
+}
+
+src_install() {
+    dobin "${WORK}"/Receivers/alsa/scream-alsa
+    dobin "${WORK}"/Receivers/alsa-ivshmem/scream-ivshmem-alsa
+}
+

@@ -1,0 +1,7 @@
+# Copyright 2019 Paul Mulders <justinkb@gmail.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require applet-window-buttons
+
+PLATFORMS="~amd64"
+

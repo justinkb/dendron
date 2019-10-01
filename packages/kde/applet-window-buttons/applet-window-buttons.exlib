@@ -1,0 +1,28 @@
+# Copyright 2019 Paul Mulders <justinkb@gmail.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require github [ user=psifidotos ] cmake
+
+SUMMARY="Plasma 5 applet in order to show window buttons in your panels"
+
+LICENCES="GPL-2"
+SLOT="0"
+MYOPTIONS=""
+
+DEPENDENCIES="
+    build:
+        sys-devel/gettext
+    build+run:
+        kde-frameworks/extra-cmake-modules[>=0.0.11]
+        kde-frameworks/kconfigwidgets[>=5.26.0]
+        kde-frameworks/kcoreaddons[>=5.38.0]
+        kde-frameworks/kdeclarative[>=5.38.0]
+        kde-frameworks/ki18n[>=5.26.0]
+        kde-frameworks/kservice[>=5.26.0]
+        kde-frameworks/kwindowsystem[>=5.26.0]
+        kde-frameworks/plasma-framework[>=5.38.0]
+        kde/kdecoration[>=5.12.0]
+        x11-libs/qtbase:5[>=5.9.0]
+        x11-libs/qtdeclarative:5[>=5.9.0]
+"
+

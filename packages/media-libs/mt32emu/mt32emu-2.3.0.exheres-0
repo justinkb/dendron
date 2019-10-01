@@ -1,0 +1,23 @@
+# Copyright 2019 Paul Mulders <justinkb@gmail.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require github [ user=munt project=munt tag=munt_${PV//./_} ] cmake
+
+SUMMARY="Library for emulating the Roland MT-32, CM-32L, CM-64 and LAPC-I"
+
+LICENCES="GPL-2"
+SLOT="0"
+PLATFORMS="~amd64"
+MYOPTIONS=""
+
+DEPENDENCIES=""
+
+CMAKE_SOURCE="${WORKBASE}"/munt-munt_${PV//./_}/mt32emu
+
+src_install() {
+    cmake_src_install
+
+    # CMakeLists.txt doesn't respect the CMAKE_INSTALL_DATAROOTDIR we pass
+    edo rm -rf "${IMAGE}"/usr/$(exhost --target)/share
+}
+

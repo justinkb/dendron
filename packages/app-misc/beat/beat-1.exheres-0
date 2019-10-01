@@ -1,0 +1,36 @@
+# Copyright 2019 Paul Mulders <justinkb@gmail.com>
+# Distributed under the terms of the GNU General Public License v2
+
+SUMMARY="beat is the canonical tool for working with beat-protocol files"
+HOMEPAGE="https://byuu.org/tool/beat"
+DOWNLOADS="https://download.byuu.org/beat_v${PV}-source.zip"
+
+LICENCES="GPL-3"
+SLOT="0"
+PLATFORMS="~amd64"
+MYOPTIONS=""
+
+DEPENDENCIES="
+    build:
+        virtual/pkg-config
+    build+run:
+        x11-libs/libX11
+        x11-libs/qtbase:5
+"
+
+WORK="${WORKBASE}"/beat_v${PV}-source/beat
+
+src_prepare() {
+    default
+
+    edo sed -i -e 's/pkg-config/${PKG_CONFIG}/g' ../hiro/GNUmakefile
+}
+
+src_compile() {
+    emake compiler=${CXX} hiro=qt5 moc=/usr/host/bin/moc-qt5
+}
+
+src_install() {
+    dobin out/beat
+}
+

@@ -1,0 +1,32 @@
+# Copyright 2019 Paul Mulders <justinkb@gmail.com>
+# Distributed under the terms of the GNU General Public License v2
+
+SUMMARY="Playstation Patch File console tools"
+HOMEPAGE="http://rescene.wikidot.com/${PN}"
+DOWNLOADS="http://rescene.wdfiles.com/local--files/${PN}/pdx-ppf3.zip"
+
+LICENCES="public-domain"
+SLOT="0"
+PLATFORMS="~amd64"
+MYOPTIONS=""
+
+DEPENDENCIES=""
+
+WORK="${WORKBASE}"/ppfdev
+
+src_compile() {
+    for tool in applyppf makeppf; do
+        edo pushd "${tool}_src"
+        edo ${CC} -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -o ${tool}3 ${tool}3_linux.c
+        edo popd
+    done
+}
+
+src_install() {
+    dobin applyppf_src/applyppf3
+    dobin makeppf_src/makeppf3
+
+    dodoc "${WORKBASE}"/readme.txt
+    dodoc PPF3.txt
+}
+

@@ -1,0 +1,15 @@
+Source: me, Paul Mulders <justinkb@gmail.com>
+Upstream: unmaintained
+Reason: function is used before its declaration later in the source file
+
+--- a/torrentcheck.c	2019-10-02 23:42:34.306691971 +0200
++++ b/torrentcheck.c	2019-10-02 23:42:21.480025157 +0200
+@@ -68,6 +68,8 @@ typedef struct {
+ 	int errorsFound;
+ } fileRecord;
+ 
++int beStepOver(BYTE* benstr,int benstrLen,int benstrOffset);
++
+ // Extracts the integer
+ // Returns the new offset into the input,
+ // or -1 if unable to parse the input

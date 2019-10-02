@@ -1,0 +1,27 @@
+# Copyright 2019 Paul Mulders <justinkb@gmail.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require sourceforge [ suffix=zip ]
+
+SUMMARY="Command-line utility to catalog and verify torrent files"
+
+LICENCES="public-domain"
+SLOT="0"
+PLATFORMS="~amd64"
+MYOPTIONS=""
+
+DEPENDENCIES=""
+
+WORK="${WORKBASE}"
+
+DEFAULT_SRC_PREPARE_PATCHES=( "${FILES}"/prototype-beStepOver.patch )
+
+src_compile() {
+    edo ${CC} ${CFLAGS} -DUSE_FTELLO -o ${PN} sha1.c torrentcheck.c
+}
+
+src_install() {
+    dobin ${PN}
+    newdoc torrentcheck.txt README
+}
+

@@ -14,14 +14,14 @@ DEPENDENCIES="
         sys-devel/gettext
     build+run:
         kde-frameworks/extra-cmake-modules[>=0.0.11]
-        kde-frameworks/kconfigwidgets[>=5.26.0]
-        kde-frameworks/kcoreaddons[>=5.38.0]
-        kde-frameworks/kdeclarative[>=5.38.0]
-        kde-frameworks/ki18n[>=5.26.0]
-        kde-frameworks/kservice[>=5.26.0]
-        kde-frameworks/kwindowsystem[>=5.26.0]
-        kde-frameworks/plasma-framework[>=5.38.0]
-        kde/kdecoration[>=5.12.0]
+        kde-frameworks/kconfigwidgets:5[>=5.26.0]
+        kde-frameworks/kcoreaddons:5[>=5.38.0]
+        kde-frameworks/kdeclarative:5[>=5.38.0]
+        kde-frameworks/ki18n:5[>=5.26.0]
+        kde-frameworks/kservice:5[>=5.26.0]
+        kde-frameworks/kwindowsystem:5[>=5.26.0]
+        kde-frameworks/plasma-framework:5[>=5.38.0]
+        kde/kdecoration:4[>=5.12.0]
         x11-libs/qtbase:5[>=5.9.0]
         x11-libs/qtdeclarative:5[>=5.9.0]
 "

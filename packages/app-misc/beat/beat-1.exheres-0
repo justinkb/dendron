@@ -12,6 +12,7 @@ MYOPTIONS=""
 
 DEPENDENCIES="
     build:
+        app-arch/unzip
         virtual/pkg-config
     build+run:
         x11-libs/libX11

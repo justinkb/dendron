@@ -1,0 +1,11 @@
+--- a/src/trrntzip.c	2005-05-02 15:38:40.000000000 +0200
++++ b/src/trrntzip.c	2019-10-02 19:47:31.525460397 +0200
+@@ -782,7 +784,7 @@
+   
+           if (strstr (szTmpBuf, ".zip\0") && !(istat.st_mode & S_IWUSR))
+           {            
+-            chmod (direntp->d_name, S_IWUSR);
++            chmod (direntp->d_name, S_IRUSR | S_IWUSR);
+             mig.cEncounteredZips++;
+   
+             if (!mig.fProcessLog)

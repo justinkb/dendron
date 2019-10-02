@@ -20,7 +20,7 @@ WORK="${WORKBASE}"/ppfdev
 src_compile() {
     for tool in applyppf makeppf; do
         edo pushd "${tool}_src"
-        edo ${CC} -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -o ${tool}3 ${tool}3_linux.c
+        edo ${CC} ${CFLAGS} -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -o ${tool}3 ${tool}3_linux.c
         edo popd
     done
 }

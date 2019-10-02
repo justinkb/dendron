@@ -1,3 +1,7 @@
+Source: me, Paul Mulders <justinkb@gmail.com>
+Upstream: dead
+Reason: need this header for free() which is otherwise implicitly declared
+
 --- a/src/logging.c	2019-10-02 19:43:41.725458113 +0200
 +++ b/src/logging.c	2019-10-02 19:43:33.022124692 +0200
 @@ -26,6 +26,7 @@

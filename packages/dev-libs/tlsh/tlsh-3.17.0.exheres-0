@@ -1,0 +1,65 @@
+# Copyright 2019 Paul Mulders <justinkb@gmail.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require github [ user=trendmicro ] \
+    setup-py [ blacklist=none import=distutils multibuild=false with_opt=true ] \
+    cmake
+
+SUMMARY="A fuzzy matching library"
+
+LICENCES="|| ( Apache-2.0 BSD )"
+SLOT="0"
+PLATFORMS="~amd64"
+MYOPTIONS="
+    utils [[ description = [ Install the tlsh{,_pattern} and rand_tags utilities ] ]]
+"
+
+DEPENDENCIES=""
+
+src_prepare() {
+    cmake_src_prepare
+
+    # make sure we build the shared library (disabled by default)
+    edo sed -i -e 's/TLSH_SHARED_LIBRARY 0/TLSH_SHARED_LIBRARY 1/g' src/CMakeLists.txt
+}
+
+src_compile() {
+    default
+
+    if optionq python; then
+        # build python module
+        edo pushd "${CMAKE_SOURCE}"/py_ext
+        setup-py_src_compile
+        edo popd
+    fi
+}
+
+src_test() {
+    # see make.sh
+    edo pushd "${CMAKE_SOURCE}"/bin
+    edo cmake -E create_symlink tlsh_unittest tlsh
+    edo popd
+
+    default
+}
+
+src_install() {
+    cmake_src_install
+
+    if optionq utils; then
+        dobin "${CMAKE_SOURCE}"/bin/rand_tags
+        # install the built "tlsh_unittest" binary as tlsh, it's actually a program
+        # used for the unit test, not in and of itself a test program; not sure why
+        # they named it as they did in the CMake build files
+        newbin "${CMAKE_SOURCE}"/bin/tlsh_unittest tlsh
+        dobin "${CMAKE_SOURCE}"/bin/tlsh_pattern
+    fi
+
+    if optionq python; then
+        # install python module
+        edo pushd "${CMAKE_SOURCE}"/py_ext
+        setup-py_src_install
+        edo popd
+    fi
+}
+

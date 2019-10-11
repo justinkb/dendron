@@ -19,6 +19,9 @@ DEPENDENCIES=""
 src_prepare() {
     cmake_src_prepare
 
+    # don't link libgcc and libstdc++ statically
+    edo sed -i -e '/set(CMAKE_EXE_LINKER_FLAGS/d' CMakeLists.txt
+
     # make sure we build the shared library (disabled by default)
     edo sed -i -e 's/TLSH_SHARED_LIBRARY 0/TLSH_SHARED_LIBRARY 1/g' src/CMakeLists.txt
 }

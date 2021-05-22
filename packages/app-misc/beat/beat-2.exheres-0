@@ -1,9 +1,11 @@
 # Copyright 2019 Paul Mulders <justinkb@gmail.com>
 # Distributed under the terms of the GNU General Public License v2
 
+require toolchain-funcs
+
 SUMMARY="beat is the canonical tool for working with beat-protocol files"
-HOMEPAGE="https://byuu.org/tool/beat"
-DOWNLOADS="https://download.byuu.org/beat_v${PV}-source.zip"
+HOMEPAGE="https://near.sh/"
+DOWNLOADS="https://near.sh/downloads/beat_v${PV}.tar.xz"
 
 LICENCES="GPL-3"
 SLOT="0"
@@ -15,20 +17,28 @@ DEPENDENCIES="
         virtual/unzip
         virtual/pkg-config
     build+run:
+        gnome-desktop/gtksourceview:2
         x11-libs/libX11
-        x11-libs/qtbase:5
+        x11-libs/gtk+:2
 "
 
-WORK="${WORKBASE}"/beat_v${PV}-source/beat
+WORK="${WORKBASE}"/beat
 
 src_prepare() {
     default
 
     edo sed -i -e 's/pkg-config/${PKG_CONFIG}/g' ../hiro/GNUmakefile
+
+    if cc-is-clang; then
+        edo sed -i -e 's/hiro.options = /hiro.options = -lm /g' ../hiro/GNUmakefile
+        if has_version dev-lang/clang[providers:libc++]; then
+            edo sed -i -e 's/-ldl/-ldl -lc++/g' ../nall/GNUmakefile
+        fi
+    fi
 }
 
 src_compile() {
-    emake compiler=${CXX} hiro=qt5 moc=/usr/host/bin/moc-qt5
+    emake compiler=${CC} hiro=gtk2 verbose
 }
 
 src_install() {

@@ -1,0 +1,42 @@
+# Copyright 2021 Paul Mulders <justinkb@gmail.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require github [ user=3DSGuy project=Project_CTR ]
+
+SUMMARY="NCCH, CCI, and CIA file creation tool"
+
+LICENCES="MIT"
+SLOT="0"
+PLATFORMS="~amd64"
+MYOPTIONS=""
+
+DEPENDENCIES="
+    build+run:
+        dev-libs/libyaml
+"
+
+WORK="${WORK}/${PN}"
+
+src_prepare() {
+    default
+
+    local target=$(exhost --target)
+
+    # don't mess up compiler flags for no reason
+    edo sed -i -e "s:CFLAGS =.*:CFLAGS = ${CFLAGS} -I.:" Makefile
+
+    # use system compiler and target arch
+    edo sed -i -e '/CC =/d' Makefile
+    edo sed -i -e "s/SYS :=.*/SYS := ${target}/" Makefile
+
+    # build against system libyaml
+    edo rm -rf libyaml
+    edo sed -i -e 's/ libyaml//' Makefile
+    edo sed -i -e "s:\$(LIBS):\$(LIBS) -L/usr/${target}/lib -lyaml -lm:" Makefile
+    edo sed -i -e 's:libyaml/yaml.h:yaml.h:' yaml_parser.h
+}
+
+src_install() {
+    dobin makerom
+}
+

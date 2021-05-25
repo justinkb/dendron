@@ -1,0 +1,18 @@
+# Copyright 2021 Paul Mulders <justinkb@gmail.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require github [ user=TuxSH tag=v${PV} ]
+require setup-py [ import=setuptools ]
+
+SUMMARY="A tool to parse, extract, and build 3DS firmware files"
+
+LICENCES="BSD-3"
+SLOT="0"
+PLATFORMS="~amd64"
+MYOPTIONS=""
+
+DEPENDENCIES="
+    run:
+        dev-python/pycryptodome[python_abis:*(-)?]
+"
+

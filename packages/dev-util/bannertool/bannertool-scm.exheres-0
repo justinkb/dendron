@@ -1,0 +1,43 @@
+# Copyright 2021 Paul Mulders <justinkb@gmail.com>
+# Distributed under the terms of the GNU General Public License v2
+
+SCM_SECONDARY_REPOSITORIES="buildtools"
+SCM_buildtools_REPOSITORY="https://github.com/Steveice10/buildtools.git"
+SCM_EXTERNAL_REFS="buildtools:buildtools"
+
+require github [ user=Steveice10 ]
+
+SUMMARY="A tool for creating 3DS banners"
+
+LICENCES="MIT"
+SLOT="0"
+PLATFORMS="~amd64"
+MYOPTIONS=""
+
+DEPENDENCIES=""
+
+src_prepare() {
+    default
+
+    local target=$(exhost --target)
+
+    edo sed -i -e "s/AR := ar/AR := ${target}-ar/g" buildtools/make_base
+    edo sed -i -e "s/AS := as/AR := ${target}-as/g" buildtools/make_base
+    edo sed -i -e "s/CC := gcc/AR := ${target}-cc/g" buildtools/make_base
+    edo sed -i -e "s/CXX := g++/AR := ${target}-c++/g" buildtools/make_base
+
+    edo sed -i -e "s:/usr/local/bin:${IMAGE}/usr/${target}/bin:" buildtools/make_base
+}
+
+src_configure() {
+    export DEVKITPRO=/opt/devkitpro
+
+    default
+}
+
+src_install() {
+    edo mkdir -p ${IMAGE}/usr/$(exhost --target)/bin
+
+    default
+}
+

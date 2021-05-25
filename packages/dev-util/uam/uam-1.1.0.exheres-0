@@ -1,0 +1,20 @@
+# Copyright 2021 Paul Mulders <justinkb@gmail.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require github [ user=devkitPro tag=v${PV} ] meson
+
+SUMMARY="deko3d shader compiler for Nintendo Switch"
+LICENCES="ZLIB"
+
+SLOT="0"
+PLATFORMS="~amd64"
+MYOPTIONS=""
+
+DEPENDENCIES="
+    build:
+        dev-lang/python:*[>=3]
+        dev-python/Mako[>=0.8.0]
+        sys-devel/bison
+        sys-devel/flex
+"
+

@@ -1,0 +1,43 @@
+From bdf6aa3fb757a2363a4e708174b7d23a4997763d Mon Sep 17 00:00:00 2001
+From: Allan McRae <allan@archlinux.org>
+Date: Sat, 27 Mar 2021 09:13:05 +1000
+Subject: libmakepkg: fix detection of source file names for debug packages
+
+The current gcc build from git master give different output from
+readelf:
+
+gcc-10.2.0
+$ readelf "hello" --debug-dump | grep hello
+<11> DW_AT_name : (indirect string, offset: 0xbfc): hello.cpp
+
+gcc-git
+$ readelf "hello" --debug-dump | grep hello
+<12> DW_AT_name : (indirect line string, offset: 0x0): hello.cpp
+
+This causes the awk statement extracting the file name to fail as it
+relied on the information being in the 8th field. Instead, extract
+the information from the final field.
+
+Fixes FS#70168
+
+Signed-off-by: Allan McRae <allan@archlinux.org>
+---
+ scripts/libmakepkg/tidy/strip.sh.in | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/scripts/libmakepkg/tidy/strip.sh.in b/scripts/libmakepkg/tidy/strip.sh.in
+index ceb2a108..737c5115 100644
+--- a/scripts/libmakepkg/tidy/strip.sh.in
++++ b/scripts/libmakepkg/tidy/strip.sh.in
+@@ -37,7 +37,7 @@ build_id() {
+ 
+ source_files() {
+ 	LANG=C readelf "$1" --debug-dump | \
+-		awk '/DW_AT_name +:/{name=$8}/DW_AT_comp_dir +:/{{if (name == "<artificial>") next}{if (name !~ /^[<\/]/) {printf "%s/", $8}}{print name}}'
++		awk '/DW_AT_name +:/{name=$NF}/DW_AT_comp_dir +:/{{if (name == "<artificial>") next}{if (name !~ /^[<\/]/) {printf "%s/", $NF}}{print name}}'
+ }
+ 
+ strip_file() {
+-- 
+cgit v1.2.3-1-gf6bb5
+

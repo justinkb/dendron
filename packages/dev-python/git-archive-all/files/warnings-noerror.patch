@@ -1,0 +1,13 @@
+Source: me, Paul Mulders <justinkb@gmail.com>
+Upstream: no
+Reason: don't error out on warnings (caused by use of pytest 6 over 5)
+--- a/setup.cfg	2021-06-17 20:19:08.088141060 +0200
++++ b/setup.cfg	2021-06-17 20:19:15.084807513 +0200
+@@ -58,7 +58,6 @@ tests_require =
+ 
+ [tool:pytest]
+ addopts = --cov=git_archive_all --cov-report=term --cov-branch --showlocals -vv
+-filterwarnings = error
+ 
+ [tox:tox]
+ envlist =

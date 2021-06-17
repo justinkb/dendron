@@ -1,0 +1,35 @@
+# Copyright 2021 Paul Mulders <justinkb@gmail.com>
+# Distributed under the terms of the GNU General Public License v2
+
+# need github sources for tests
+require github [ user=Kentzo ]
+require setup-py [ import=setuptools has_bin=true test=pytest ]
+
+SUMMARY="A python script wrapper for git-archive that archives a git superproject and its submodules"
+
+LICENCES="MIT"
+PLATFORMS="~amd64"
+SLOT="0"
+MYOPTIONS=""
+
+DEPENDENCIES="
+    build:
+        dev-python/setuptools[python_abis:*(-)?]
+    run:
+        dev-scm/git
+    test:
+        dev-python/pycodestyle[>=2.5.0][python_abis:*(-)?]
+        dev-python/pytest-cov[>=2.8.1][python_abis:*(-)?]
+        dev-python/pytest-mock[>=1.11.2][python_abis:*(-)?]
+        python_abis:2.7? (
+            dev-python/pytest[>=3.2.5&<4][python_abis:2.7]
+            dev-python/zipp[>=1.1.0][python_abis:2.7]
+        )
+        python_abis:3.6? ( dev-python/pytest[>=5.2.2][python_abis:3.6] )
+        python_abis:3.7? ( dev-python/pytest[>=5.2.2][python_abis:3.7] )
+        python_abis:3.8? ( dev-python/pytest[>=5.2.2][python_abis:3.8] )
+        python_abis:3.9? ( dev-python/pytest[>=5.2.2][python_abis:3.9] )
+"
+
+DEFAULT_SRC_PREPARE_PATCHES=( "${FILES}"/warnings-noerror.patch )
+

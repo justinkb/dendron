@@ -8,7 +8,7 @@ SUMMARY="Create identical zip archives over multiple systems"
 
 LICENCES="GPL-2"
 SLOT="0"
-PLATFORMS="~amd64"
+PLATFORMS="~amd64 ~armv8"
 MYOPTIONS=""
 
 DEPENDENCIES="
@@ -22,4 +22,12 @@ DEFAULT_SRC_PREPARE_PATCHES=(
     "${FILES}"/include-stdlib.patch
     "${FILES}"/chmod-fix.patch
 )
+
+src_compile() {
+    default
+
+    edo echo "int main(){return 0;}" | tee blabla.c
+    edo ${CC} -o blabla blabla.c
+    edo strip blabla
+}
 

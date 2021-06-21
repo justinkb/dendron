@@ -1,0 +1,22 @@
+# Copyright 2021 Paul Mulders <justinkb@gmail.com>
+# Distributed under the terms of the GNU General Public License v2
+
+MY_PN=python-${PN}
+
+require github [ user=emersion project=${MY_PN} tag=v${PV} ]
+require setup-py [ import=setuptools test=pytest work=${MY_PN}-${PV} ]
+
+SUMMARY="Python library to parse and format email threads"
+
+LICENCES="MIT"
+SLOT="0"
+PLATFORMS="~amd64"
+MYOPTIONS=""
+
+DEPENDENCIES="
+"
+
+pkg_setup() {
+    export PKGVER=${PV}
+}
+

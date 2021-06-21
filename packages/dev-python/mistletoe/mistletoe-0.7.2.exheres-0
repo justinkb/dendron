@@ -1,0 +1,23 @@
+# Copyright 2021 Paul Mulders <justinkb@gmail.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require github [ user=miyuchina tag=v${PV} ]
+require setup-py [ import=setuptools ]
+
+SUMMARY="A fast, extensible and spec-compliant Markdown parser in pure Python."
+
+LICENCES="MIT"
+SLOT="0"
+PLATFORMS="~amd64"
+MYOPTIONS=""
+
+DEPENDENCIES="
+    suggestion:
+        dev-python/Pygments[python_abis:*(-)?] [[ note = [ for pygments_renderer.py in contrib/ ] ]]
+"
+
+setup-py_test_one_multibuild() {
+    PYTHONPATH=$(echo "${PWD}"/build/lib*) edo ${PYTHON} -m unittest
+    PYTHONPATH=$(echo "${PWD}"/build/lib*) edo ${PYTHON} -m test.commonmark
+}
+

@@ -1,0 +1,24 @@
+# Copyright 2021 Paul Mulders <justinkb@gmail.com>
+# Distributed under the terms of the GNU General Public License v2
+
+MY_PN=${PN}-py
+
+require github [ user=${PN} project=${MY_PN} ]
+require setup-py [ import=setuptools test=pytest work=${MY_PN}-${PV} ]
+
+SUMMARY="MinIO Client SDK for Python"
+
+LICENCES="Apache-2.0"
+SLOT="0"
+PLATFORMS="~amd64"
+MYOPTIONS=""
+
+DEPENDENCIES="
+    build+run:
+       dev-python/certifi[python_abis:*(-)?]
+       dev-python/urllib3[python_abis:*(-)?]
+    test:
+       dev-python/mock[python_abis:*(-)?]
+       dev-python/nose[python_abis:*(-)?]
+"
+

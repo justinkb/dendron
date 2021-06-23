@@ -1,0 +1,25 @@
+# Copyright 2021 Paul Mulders <justinkb@gmail.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require pypi
+require setup-py [ import=setuptools test=pytest ]
+
+SUMMARY="A tiny package that provides the poly fill for Flake8 plugins trying to support Flake8 2.x and Flake8 3.x"
+HOMEPAGE+=" https://gitlab.com/pycqa/${PN}"
+
+LICENCES="MIT"
+SLOT="0"
+PLATFORMS="~amd64"
+MYOPTIONS=""
+
+DEPENDENCIES="
+    build+run:
+        dev-python/flake8[>=3.0.0][python_abis:*(-)?]
+    test:
+        dev-python/mock[python_abis:*(-)?]
+        dev-python/pep8[python_abis:*(-)?]
+        dev-python/pycodestyle[python_abis:*(-)?]
+"
+
+DEFAULT_SRC_PREPARE_PATCHES=( "${FILES}"/Use-tool-pytest-in-place-of-pytest-in-setup-cfg.patch )
+

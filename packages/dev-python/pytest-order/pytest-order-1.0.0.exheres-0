@@ -1,0 +1,44 @@
+# Copyright 2021 Paul Mulders <justinkb@gmail.com>
+# Distributed under the terms of the GNU General Public License v2
+
+# need github sources for tests
+require github [ user=pytest-dev tag=v${PV} ]
+require setup-py [ blacklist=2 import=setuptools test=pytest ]
+
+SUMMARY="A pytest plugin that allows to customize the test execution order."
+
+LICENCES="MIT"
+PLATFORMS="~amd64"
+SLOT="0"
+MYOPTIONS=""
+
+DEPENDENCIES="
+    build:
+        dev-python/setuptools[python_abis:*(-)?]
+    test:
+        dev-python/pytest[>=5.0][python_abis:*(-)?]
+        dev-python/pytest-dependency[>=0.5.1][python_abis:*(-)?]
+        dev-python/pytest-mock[>=1.11.0][python_abis:*(-)?]
+        dev-python/pytest-xdist[>=1.29.0][python_abis:*(-)?]
+"
+
+test_one_multibuild() {
+    local abi_temp="${TEMP}${MULTIBUILD_TARGET}"
+    local test_dir="${abi_temp}"/test
+    local test_libdir="${test_dir}"/lib
+    local test_log="${abi_temp}"/test.log
+
+    # Install pytest-order to a temporary directory for testing.
+    edo mkdir -p "${test_libdir}"
+    export PYTHONPATH="${test_libdir}"
+    export PATH="${test_dir}/bin:${PATH}"
+    edo "${PYTHON}" setup.py install        \
+        --home="${test_dir}"                \
+        --install-lib="${test_libdir}"      \
+        --single-version-externally-managed \
+        --record="${abi_temp}"/record.log   \
+        --no-compile
+    # NOTE: We can not use setup-py_test_one_multibuild here as it will overwrite PYTHONPATH
+    edo py.test-$(python_get_abi) --rootdir="${test_dir}" tests
+}
+

@@ -3,7 +3,7 @@
 
 # need github sources for tests
 require github [ user=RKrahl release=${PV} suffix=tar.gz ]
-require setup-py [ blacklist=2 import=setuptools test=pytest ]
+require setup-py [ import=setuptools test=pytest ]
 
 SUMMARY="Manage dependencies of tests"
 

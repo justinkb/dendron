@@ -1,0 +1,23 @@
+# Copyright 2021 Paul Mulders <justinkb@gmail.com>
+# Distributed under the terms of the GNU General Public License v2
+
+# need github sources for tests
+require github [ user=RKrahl release=${PV} suffix=tar.gz ]
+require setup-py [ blacklist=2 import=setuptools test=pytest ]
+
+SUMMARY="Manage dependencies of tests"
+
+LICENCES="Apache-2.0"
+PLATFORMS="~amd64"
+SLOT="0"
+MYOPTIONS=""
+
+DEPENDENCIES="
+    build:
+        dev-python/setuptools[python_abis:*(-)?]
+    build+run+test:
+        dev-python/pytest[>=3.6.0][python_abis:*(-)?]
+"
+
+DEFAULT_SRC_PREPARE_PATCHES=( "${FILES}"/0930889a13e2b9baa7617f05dc9b55abede5209d.patch )
+

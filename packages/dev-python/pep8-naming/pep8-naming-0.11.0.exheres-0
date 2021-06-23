@@ -1,0 +1,44 @@
+# Copyright 2021 Paul Mulders <justinkb@gmail.com>
+# Distributed under the terms of the GNU General Public License v2
+
+# need github sources for tests
+require github [ user=PyCQA ]
+require setup-py [ import=setuptools ]
+
+SUMMARY="Naming Convention checker for Python"
+
+LICENCES="MIT"
+PLATFORMS="~amd64"
+SLOT="0"
+MYOPTIONS=""
+
+DEPENDENCIES="
+    build:
+        dev-python/setuptools[python_abis:*(-)?]
+    build+run:
+        dev-python/flake8[>=3.9.1][python_abis:*(-)?]
+        dev-python/flake8-polyfill[>=1.0.2&<2][python_abis:*(-)?]
+"
+
+DEFAULT_SRC_PREPARE_PATCHES=( "${FILES}"/6d62db81d7967e123e29673a4796fefec6f06d26.patch )
+
+test_one_multibuild() {
+    local abi_temp="${TEMP}${MULTIBUILD_TARGET}"
+    local test_dir="${abi_temp}"/test
+    local test_libdir="${test_dir}"/lib
+    local test_log="${abi_temp}"/test.log
+
+    # Install pep8-naming to a temporary directory for testing.
+    edo mkdir -p "${test_libdir}"
+    export PYTHONPATH="${test_libdir}"
+    export PATH="${test_dir}/bin:${PATH}"
+    edo "${PYTHON}" setup.py install        \
+        --home="${test_dir}"                \
+        --install-lib="${test_libdir}"      \
+        --single-version-externally-managed \
+        --record="${abi_temp}"/record.log   \
+        --no-compile
+    # NOTE: We can not use setup-py_test_one_multibuild here as it will overwrite PYTHONPATH
+    edo ${PYTHON} run_tests.py
+}
+

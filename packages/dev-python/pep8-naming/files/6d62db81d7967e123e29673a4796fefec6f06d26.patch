@@ -1,0 +1,23 @@
+Upstream: yes
+From 6d62db81d7967e123e29673a4796fefec6f06d26 Mon Sep 17 00:00:00 2001
+From: eloy <eloy.colell@gmail.com>
+Date: Sat, 17 Apr 2021 10:59:26 -0300
+Subject: [PATCH] Improve tox call to include an empty list for
+ extended-default-ignore.
+
+---
+ run_tests.py | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/run_tests.py b/run_tests.py
+index 1cb092f..64d80b5 100644
+--- a/run_tests.py
++++ b/run_tests.py
+@@ -89,6 +89,7 @@ def parse_options(checker, options):
+     options_manager.add_option('--ignore', default=[])
+     options_manager.add_option('--extend-ignore', default=[])
+     options_manager.add_option('--enable-extensions', default=[])
++    options_manager.add_option('--extended-default-ignore', default=[])
+     checker.add_options(options_manager)
+     processed_options, _ = options_manager.parse_args(options)
+     checker.parse_options(processed_options)

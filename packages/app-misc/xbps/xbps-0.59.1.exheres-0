@@ -1,0 +1,41 @@
+# Copyright 2021 Paul Mulders <justinkb@gmail.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require github [ user=void-linux tag=${PV} ]
+
+SUMMARY="The X Binary Package System"
+
+LICENCES="BSD-3"
+SLOT="0"
+PLATFORMS="~amd64"
+MYOPTIONS=""
+
+DEPENDENCIES="
+    build:
+        virtual/pkg-config
+    build+run:
+        app-arch/libarchive[>=3.0.0]
+        dev-libs/openssl:0
+        sys-libs/zlib
+    run:
+        app-misc/ca-certificates
+"
+
+# required unpackaged kyua
+RESTRICT="test"
+
+DEFAULT_SRC_PREPARE_PATCHES=(
+    "${FILES}/cflags.patch"
+    "${FILES}/ldflags.patch"
+)
+
+DEFAULT_SRC_CONFIGURE_PARAMS=( --verbose )
+
+src_prepare() {
+    default
+
+    edo sed \
+        -e "s/pkg-config --/${PKG_CONFIG} --/g" \
+        -i "${WORK}"/configure
+}
+

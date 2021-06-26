@@ -1,0 +1,123 @@
+Source: me, Paul Mulders <justinkb@gmail.com>
+Upstream: no
+Reason: fix build with stricter linker
+--- a/bin/xbps-alternatives/Makefile	2020-04-01 11:32:37.000000000 +0200
++++ b/bin/xbps-alternatives/Makefile	2021-06-27 00:19:47.219738300 +0200
+@@ -4,3 +4,5 @@ TOPDIR = ../..
+ BIN = xbps-alternatives
+ 
+ include $(TOPDIR)/mk/prog.mk
++
++LDFLAGS += -lcrypto
+--- a/bin/xbps-checkvers/Makefile	2020-04-01 11:32:37.000000000 +0200
++++ b/bin/xbps-checkvers/Makefile	2021-06-27 00:22:25.539732255 +0200
+@@ -6,3 +6,5 @@ EXTRA_CFLAGS += -Wno-deprecated-declarat
+ BIN = xbps-checkvers
+ 
+ include $(TOPDIR)/mk/prog.mk
++
++LDFLAGS += -lcrypto
+--- a/bin/xbps-create/Makefile	2020-04-01 11:32:37.000000000 +0200
++++ b/bin/xbps-create/Makefile	2021-06-27 00:20:33.626403204 +0200
+@@ -4,3 +4,5 @@ TOPDIR = ../..
+ BIN = xbps-create
+ 
+ include $(TOPDIR)/mk/prog.mk
++
++LDFLAGS += -lcrypto
+--- a/bin/xbps-dgraph/Makefile	2020-04-01 11:32:37.000000000 +0200
++++ b/bin/xbps-dgraph/Makefile	2021-06-27 00:20:55.856402346 +0200
+@@ -4,3 +4,5 @@ TOPDIR = ../..
+ BIN = xbps-dgraph
+ 
+ include $(TOPDIR)/mk/prog.mk
++
++LDFLAGS += -lcrypto
+--- a/bin/xbps-digest/Makefile	2020-04-01 11:32:37.000000000 +0200
++++ b/bin/xbps-digest/Makefile	2021-06-27 00:22:49.789731323 +0200
+@@ -5,3 +5,5 @@ BIN = xbps-digest
+ OBJS = main.o
+ 
+ include $(TOPDIR)/mk/prog.mk
++
++LDFLAGS += -lcrypto
+--- a/bin/xbps-fbulk/Makefile	2020-04-01 11:32:37.000000000 +0200
++++ b/bin/xbps-fbulk/Makefile	2021-06-27 00:22:37.116398474 +0200
+@@ -4,3 +4,5 @@ TOPDIR = ../..
+ BIN = xbps-fbulk
+ 
+ include $(TOPDIR)/mk/prog.mk
++
++LDFLAGS += -lcrypto
+--- a/bin/xbps-fetch/Makefile	2020-04-01 11:32:37.000000000 +0200
++++ b/bin/xbps-fetch/Makefile	2021-06-27 00:22:59.936397606 +0200
+@@ -5,3 +5,5 @@ BIN = xbps-fetch
+ OBJS = main.o ../xbps-install/fetch_cb.o
+ 
+ include $(TOPDIR)/mk/prog.mk
++
++LDFLAGS += -lcrypto
+--- a/bin/xbps-install/Makefile	2020-04-01 11:32:37.000000000 +0200
++++ b/bin/xbps-install/Makefile	2021-06-27 00:21:09.783068485 +0200
+@@ -5,3 +5,5 @@ BIN = xbps-install
+ OBJS = main.o transaction.o question.o fetch_cb.o state_cb.o util.o
+ 
+ include $(TOPDIR)/mk/prog.mk
++
++LDFLAGS += -lcrypto
+--- a/bin/xbps-pkgdb/Makefile	2020-04-01 11:32:37.000000000 +0200
++++ b/bin/xbps-pkgdb/Makefile	2021-06-27 00:21:24.119734597 +0200
+@@ -7,3 +7,5 @@ OBJS +=	check_pkg_alternatives.o check_p
+ OBJS +=	check_pkg_symlinks.o check_pkg_unneeded.o
+ 
+ include $(TOPDIR)/mk/prog.mk
++
++LDFLAGS += -lcrypto
+--- a/bin/xbps-query/Makefile	2020-04-01 11:32:37.000000000 +0200
++++ b/bin/xbps-query/Makefile	2021-06-27 00:21:35.243067510 +0200
+@@ -6,3 +6,5 @@ OBJS =  main.o list.o show-deps.o show-i
+ OBJS += ownedby.o search.o ../xbps-install/util.o
+ 
+ include $(TOPDIR)/mk/prog.mk
++
++LDFLAGS += -lcrypto
+--- a/bin/xbps-reconfigure/Makefile	2020-04-01 11:32:37.000000000 +0200
++++ b/bin/xbps-reconfigure/Makefile	2021-06-27 00:21:48.276400346 +0200
+@@ -4,3 +4,5 @@ TOPDIR = ../..
+ BIN =	xbps-reconfigure
+ 
+ include $(TOPDIR)/mk/prog.mk
++
++LDFLAGS += -lcrypto
+--- a/bin/xbps-remove/Makefile	2020-04-01 11:32:37.000000000 +0200
++++ b/bin/xbps-remove/Makefile	2021-06-27 00:22:00.949733182 +0200
+@@ -8,3 +8,5 @@ OBJS += ../xbps-install/util.o
+ OBJS += ../xbps-install/transaction.o
+ 
+ include $(TOPDIR)/mk/prog.mk
++
++LDFLAGS += -lcrypto
+--- a/bin/xbps-uchroot/Makefile	2020-04-01 11:32:37.000000000 +0200
++++ b/bin/xbps-uchroot/Makefile	2021-06-27 00:23:10.413063883 +0200
+@@ -4,3 +4,5 @@ TOPDIR = ../..
+ BIN = xbps-uchroot
+ 
+ include $(TOPDIR)/mk/prog.mk
++
++LDFLAGS += -lcrypto
+--- a/bin/xbps-uhelper/Makefile	2020-04-01 11:32:37.000000000 +0200
++++ b/bin/xbps-uhelper/Makefile	2021-06-27 00:22:13.983066027 +0200
+@@ -6,3 +6,5 @@ OBJS = main.o ../xbps-install/fetch_cb.o
+ MAN =
+ 
+ include $(TOPDIR)/mk/prog.mk
++
++LDFLAGS += -lcrypto
+--- a/bin/xbps-uunshare/Makefile	2020-04-01 11:32:37.000000000 +0200
++++ b/bin/xbps-uunshare/Makefile	2021-06-27 00:23:21.849730103 +0200
+@@ -4,3 +4,5 @@ TOPDIR = ../..
+ BIN = xbps-uunshare
+ 
+ include $(TOPDIR)/mk/prog.mk
++
++LDFLAGS += -lcrypto

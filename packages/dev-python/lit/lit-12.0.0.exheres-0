@@ -1,0 +1,36 @@
+# Copyright 2021 Paul Mulders <justinkb@gmail.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require github [ pn=llvm user=llvm project=llvm-project release=llvmorg-12.0.0 suffix=src.tar.xz ]
+require setup-py [ blacklist=2 has_bin=true import=setuptools work=llvm-${PV}.src/utils/lit ]
+
+SUMMARY="A Software Testing Tool"
+
+LICENCES="Apache-2.0-with-LLVM-exception"
+SLOT="0"
+PLATFORMS="~amd64"
+MYOPTIONS=""
+
+DEPENDENCIES="
+"
+
+test_one_multibuild() {
+    local abi_temp="${TEMP}${MULTIBUILD_TARGET}"
+    local test_dir="${abi_temp}"/test
+    local test_libdir="${test_dir}"/lib
+    local test_log="${abi_temp}"/test.log
+
+    # Install lit to a temporary directory for testing.
+    edo mkdir -p "${test_libdir}"
+    export PYTHONPATH="${test_libdir}"
+    export PATH="${test_dir}/bin:${PATH}"
+    edo "${PYTHON}" setup.py install        \
+        --home="${test_dir}"                \
+        --install-lib="${test_libdir}"      \
+        --single-version-externally-managed \
+        --record="${abi_temp}"/record.log   \
+        --no-compile
+    # NOTE: We can not use setup-py_test_one_multibuild here as it will overwrite PYTHONPATH
+    edo lit --workers="${EXJOBS}" "${WORKBASE}"/PYTHON_ABIS/$(python_get_abi)/llvm-${PV}.src/utils/lit/tests
+}
+

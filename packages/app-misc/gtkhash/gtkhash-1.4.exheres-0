@@ -1,0 +1,63 @@
+# Copyright 2021 Paul Mulders <justinkb@gmail.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require github [ user=tristanheaven release=v${PV} suffix=tar.xz ]
+
+SUMMARY="A cross-platform desktop utility for computing message digests or checksums"
+
+LICENCES="|| ( GPL-3 GPL-2 )"
+SLOT="0"
+PLATFORMS="~amd64"
+MYOPTIONS="
+    blake2 [[ description = [ Use BLAKE2 hash functions from libb2 ] ]]
+    gcrypt [[ description = [ Use hash functions from libgcrypt ] ]]
+    gui [[ description = [ Build the standalone GTK3 app ] ]]
+    mbedtls [[ description = [ Use hash functions from Mbed TLS ] ]]
+    nautilus-extension [[ description = [ Build the Nautilus extension ] ]]
+    nettle [[ description = [ Use hash functions from Nettle ] ]]
+    openssl [[ description = [ Use hash functions from OpenSSL's libcrypto ] ]]
+    ( gui nautilus-extension ) [[ number-selected = at-least-one ]]
+"
+
+DEPENDENCIES="
+    build:
+        dev-util/intltool[>=0.40.6]
+    build+run:
+        dev-libs/glib:2[>=2.48]
+        sys-libs/zlib
+        x11-libs/gtk+:3[>=3.20]
+        blake2? ( app-crypt/libb2 )
+        gcrypt? ( dev-libs/libgcrypt[>=1.6.0] )
+        mbedtls? ( dev-libs/mbedtls )
+        nautilus-extension? ( gnome-desktop/nautilus )
+        nettle? ( dev-libs/nettle )
+        openssl? ( dev-libs/openssl:0[>=1.1] )
+"
+
+# don't run under sandbox restrictions
+RESTRICT="test"
+
+DEFAULT_SRC_CONFIGURE_PARAMS=(
+    --disable-appstream
+    --disable-caja
+    --disable-nemo
+    --disable-peony
+    --disable-thunar
+    --enable-glib-checksums
+    --enable-internal-md6
+    --enable-linux-crypto
+    --enable-native-file-chooser
+    --enable-nls
+    --enable-zlib
+)
+
+DEFAULT_SRC_CONFIGURE_OPTION_ENABLES=(
+    blake2
+    gcrypt
+    'gui gtkhash'
+    mbedtls
+    'nautilus-extension nautilus'
+    nettle
+    'openssl libcrypto'
+)
+

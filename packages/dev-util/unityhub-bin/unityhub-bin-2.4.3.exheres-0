@@ -1,0 +1,119 @@
+# Copyright 2021 Paul Mulders <justinkb@gmail.com>
+# Distributed under the terms of the GNU General Public License v2
+
+SUMMARY="The Unity Hub is a management tool that you can use to manage all of your Unity Projects and installations."
+HOMEPAGE="https://unity3d.com/get-unity/download"
+
+DOWNLOADS="
+    platform:amd64? ( https://public-cdn.cloud.unity3d.com/hub/prod/UnityHub.AppImage -> ${PNV}.AppImage )
+"
+
+# run 'UnityHub.AppImage --appimage-offset' in a sandbox
+SQUASHFS_IMAGE_OFFSET="188392"
+
+LICENCES="Unity"
+SLOT="0"
+PLATFORMS="~amd64"
+MYOPTIONS="platform: amd64"
+
+# dlopen'd/optional(?) dependencies:
+# dev-libs/libappindicator:0.1[gtk2]
+# dev-libs/libindicator:0.4[gtk2]
+# gnome-platform/GConf
+# x11-libs/libnotify
+
+RESTRICT="strip"
+
+DEPENDENCIES="
+    build:
+        sys-fs/squashfs-tools
+        virtual/coreutils
+    run:
+        dev-libs/at-spi2-atk
+        dev-libs/at-spi2-core
+        dev-libs/atk
+        dev-libs/expat
+        dev-libs/glib:2
+        dev-libs/nspr
+        dev-libs/nss
+        net-print/cups
+        sys-apps/util-linux
+        sys-libs/libgcc:=
+        sys-sound/alsa-lib
+        x11-libs/cairo
+        x11-libs/gdk-pixbuf:2.0
+        x11-libs/gtk+:3
+        x11-libs/libX11
+        x11-libs/libXScrnSaver
+        x11-libs/libXcomposite
+        x11-libs/libXcursor
+        x11-libs/libXdamage
+        x11-libs/libXext
+        x11-libs/libXfixes
+        x11-libs/libXi
+        x11-libs/libXrandr
+        x11-libs/libXrender
+        x11-libs/libXtst
+        x11-libs/libxcb
+        x11-libs/pango
+"
+
+pkg_setup() {
+    exdirectory --allow /opt
+}
+
+src_unpack() {
+    edo mkdir -p "${WORK}"
+    edo pushd "${WORK}"
+    edo dd \
+            if="${FETCHEDDIR}"/${PNV}.AppImage \
+            of=squashfs-root.img \
+            bs=4096 \
+            skip="${SQUASHFS_IMAGE_OFFSET}" \
+            count=104857600 \
+            iflag=skip_bytes,count_bytes
+    edo unsquashfs squashfs-root.img
+    edo popd
+}
+
+src_prepare() {
+    :
+}
+
+src_configure() {
+    :
+}
+
+src_compile() {
+    :
+}
+
+src_install() {
+    edo pushd "${WORK}"/squashfs-root
+
+    edo rm unityhub.png
+    edo rm AppRun
+    edo sed \
+        -e 's/AppRun/unityhub/' \
+        -i unityhub.desktop
+    edo sed \
+        -e "s:\$SCRIPT_DIR:/opt/${PN}:" \
+        -i unityhub
+
+    dodir /usr/share/applications
+    edo mv unityhub.desktop "${IMAGE}"/usr/share/applications
+    edo mv usr/share/icons "${IMAGE}"/usr/share
+    edo rm -rf usr
+
+    dodir /opt/${PN}
+    # also place license text files in the program directory, in
+    # case the program searches for them there at run time; haven't
+    # verified this, but better safe than sorry
+    edo mv * "${IMAGE}"/opt/${PN}
+
+    dodir /usr/$(exhost --target)/bin
+    dosym /opt/${PN}/unityhub /usr/$(exhost --target)/bin/unityhub
+
+    edo popd
+}
+

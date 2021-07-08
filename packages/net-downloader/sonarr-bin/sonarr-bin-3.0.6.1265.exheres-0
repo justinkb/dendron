@@ -1,0 +1,50 @@
+# Copyright 2021 Paul Mulders <justinkb@gmail.com>
+# Distributed under the terms of the GNU General Public License v2
+
+SUMMARY="Smart PVR for newsgroup and bittorrent users."
+
+LICENCES="GPL-3"
+SLOT="0"
+PLATFORMS="~armv8"
+MYOPTIONS=""
+
+DOWNLOADS="https://download.sonarr.tv/v3/main/${PV}/Sonarr.main.${PV}.linux.tar.gz"
+
+DEPENDENCIES="
+    run:
+        dev-db/sqlite:3
+        dev-lang/mono
+        media-libs/libmediainfo
+"
+
+WORK="${WORKBASE}/Sonarr"
+
+RESTRICT="strip"
+
+pkg_setup() {
+    exdirectory --allow /opt
+}
+
+src_prepare() {
+    :
+}
+
+src_configure() {
+    :
+}
+
+src_compile() {
+    :
+}
+
+src_test() {
+    :
+}
+
+src_install() {
+    dodir /opt/${PN}
+    edo pushd "${WORK}"
+    edo mv * "${IMAGE}"/opt/${PN}
+    edo popd
+}
+

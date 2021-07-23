@@ -1,0 +1,35 @@
+# Copyright 2021 Paul Mulders <justinkb@gmail.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require github [ user=leo-arch tag=v${PV} ]
+
+SUMMARY="CLI-based, shell-like, and non-curses terminal file manager written in C"
+LICENCES="GPL-2"
+
+SLOT="0"
+PLATFORMS="~amd64"
+MYOPTIONS=""
+
+DEPENDENCIES="
+    build+run:
+        sys-apps/acl
+        sys-libs/libcap
+        sys-libs/readline:=
+"
+
+src_prepare() {
+    default
+
+    edo sed -e "/CFLAGS =/d" -i "${WORK}"/src/Makefile
+    edo sed -e 's/cc /${CC} /g' -i "${WORK}"/src/Makefile
+}
+
+src_install() {
+    local target=$(exhost --target)
+
+    dodir /usr/${target}/bin
+    dodir /usr/share
+
+    emake INSTALLPREFIX="${IMAGE}"/usr/${target}/bin DESKTOPPREFIX="${IMAGE}"/usr/share install
+}
+

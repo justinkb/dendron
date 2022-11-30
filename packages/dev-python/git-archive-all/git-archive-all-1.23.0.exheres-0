@@ -25,8 +25,6 @@ DEPENDENCIES="
             dev-python/pytest[>=3.2.5&<4][python_abis:2.7]
             dev-python/zipp[>=1.1.0][python_abis:2.7]
         )
-        python_abis:3.6? ( dev-python/pytest[>=5.2.2][python_abis:3.6] )
-        python_abis:3.7? ( dev-python/pytest[>=5.2.2][python_abis:3.7] )
         python_abis:3.8? ( dev-python/pytest[>=5.2.2][python_abis:3.8] )
         python_abis:3.9? ( dev-python/pytest[>=5.2.2][python_abis:3.9] )
 "

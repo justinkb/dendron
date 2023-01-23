@@ -20,16 +20,13 @@ DEPENDENCIES="
 src_prepare() {
     default
 
-    edo sed -e "/CFLAGS =/d" -i "${WORK}"/src/Makefile
-    edo sed -e 's/cc /${CC} /g' -i "${WORK}"/src/Makefile
+    edo sed -e "/CFLAGS =/d" -i "${WORK}"/Makefile
+    edo sed -e 's/cc /${CC} /g' -i "${WORK}"/Makefile
 }
 
 src_install() {
-    local target=$(exhost --target)
-
-    dodir /usr/${target}/bin
     dodir /usr/share
 
-    emake INSTALLPREFIX="${IMAGE}"/usr/${target}/bin DESKTOPPREFIX="${IMAGE}"/usr/share install
+    emake DESTDIR=${IMAGE} PREFIX=/usr/$(exhost --target) DESKTOPPREFIX=/usr/share install
 }
 

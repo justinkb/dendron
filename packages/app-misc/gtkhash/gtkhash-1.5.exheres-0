@@ -47,7 +47,6 @@ DEPENDENCIES="
 
 MESON_SRC_CONFIGURE_PARAMS=(
     -Dappstream=false
-    -Dbuild-gtkhash=true
     -Dbuild-caja=false
     -Dbuild-nemo=false
     -Dbuild-thunar=false

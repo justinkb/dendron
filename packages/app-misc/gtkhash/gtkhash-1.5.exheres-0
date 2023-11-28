@@ -2,6 +2,9 @@
 # Distributed under the terms of the GNU General Public License v2
 
 require github [ user=tristanheaven release=v${PV} suffix=tar.xz ]
+require meson
+require gsettings
+require gtk-icon-cache
 
 SUMMARY="A cross-platform desktop utility for computing message digests or checksums"
 
@@ -16,48 +19,70 @@ MYOPTIONS="
     nautilus-extension [[ description = [ Build the Nautilus extension ] ]]
     nettle [[ description = [ Use hash functions from Nettle ] ]]
     openssl [[ description = [ Use hash functions from OpenSSL's libcrypto ] ]]
+    openssl? ( ( providers: libressl openssl ) [[ number-selected = exactly-one ]] )
     ( gui nautilus-extension ) [[ number-selected = at-least-one ]]
-"
-
-DEPENDENCIES="
-    build:
-        dev-util/intltool[>=0.40.6]
-    build+run:
-        dev-libs/glib:2[>=2.48]
-        sys-libs/zlib
-        x11-libs/gtk+:3[>=3.20]
-        blake2? ( app-crypt/libb2 )
-        gcrypt? ( dev-libs/libgcrypt[>=1.6.0] )
-        mbedtls? ( dev-libs/mbedtls )
-        nautilus-extension? ( gnome-desktop/nautilus )
-        nettle? ( dev-libs/nettle )
-        openssl? ( dev-libs/openssl:0[>=1.1] )
 "
 
 # don't run under sandbox restrictions
 RESTRICT="test"
 
-DEFAULT_SRC_CONFIGURE_PARAMS=(
-    --disable-appstream
-    --disable-caja
-    --disable-nemo
-    --disable-peony
-    --disable-thunar
-    --enable-glib-checksums
-    --enable-internal-md6
-    --enable-linux-crypto
-    --enable-native-file-chooser
-    --enable-nls
-    --enable-zlib
+DEPENDENCIES="
+    build:
+        sys-devel/gettext
+        virtual/pkg-config
+    build+run:
+        dev-libs/glib:2[>=2.48.0]
+        sys-libs/zlib
+        x11-libs/gtk+:3[>=3.18]
+        blake2? ( app-crypt/libb2 )
+        gcrypt? ( dev-libs/libgcrypt[>=1.6.0] )
+        mbedtls? ( dev-libs/mbedtls )
+        nautilus-extension? ( gnome-desktop/nautilus )
+        nettle? ( dev-libs/nettle:= )
+        openssl? (
+            providers:libressl? ( dev-libs/libressl:= )
+            providers:openssl? ( dev-libs/openssl:=[>=1.1] )
+        )
+"
+
+MESON_SRC_CONFIGURE_PARAMS=(
+    -Dappstream=false
+    -Dbuild-gtkhash=true
+    -Dbuild-caja=false
+    -Dbuild-nemo=false
+    -Dbuild-thunar=false
+    -Dglib-checksums=true
+    -Dinternal-md6=true
+    -Dlinux-crypto=true
+    -Dnative-file-chooser=true
+    -Dthunarx=3
+    -Dzlib=true
 )
 
-DEFAULT_SRC_CONFIGURE_OPTION_ENABLES=(
+MESON_SRC_CONFIGURE_OPTION_SWITCHES=(
     blake2
     gcrypt
-    'gui gtkhash'
+    'gui build-gtkhash'
     mbedtls
-    'nautilus-extension nautilus'
+    'nautilus-extension build-nautilus'
     nettle
     'openssl libcrypto'
 )
+
+src_install() {
+    # gsettings_src_install uses `default`
+    export GSETTINGS_DISABLE_SCHEMAS_COMPILE=1
+    meson_src_install
+    unset GSETTINGS_DISABLE_SCHEMAS_COMPILE
+}
+
+pkg_postinst() {
+    gsettings_pkg_postinst
+    gtk-icon-cache_pkg_postinst
+}
+
+pkg_postrm() {
+    gsettings_pkg_postrm
+    gtk-icon-cache_pkg_postrm
+}
 

@@ -1,0 +1,54 @@
+# Copyright 2021 Paul Mulders <justinkb@gmail.com>
+# Copyright 2024 Lee Clark <wymux@shoash.com
+# Distributed under the terms of the GNU General Public License v2
+
+require github [ user=leo-arch tag=v${PV} ] \
+        bash-completion zsh-completion
+
+SUMMARY="CLI-based, shell-like, and non-curses terminal file manager written in C"
+LICENCES="GPL-2"
+
+SLOT="0"
+PLATFORMS="~amd64"
+MYOPTIONS="
+    fish-completion [[ description = [ Install completion files for the fish shell ] ]]
+"
+
+DEPENDENCIES="
+    build+run:
+        sys-apps/acl
+        sys-apps/file
+        sys-libs/libcap
+        sys-libs/ncurses [[ note = plugins/kbgen.c ]]
+        sys-libs/readline:=
+"
+
+BASH_COMPLETIONS=( "${WORK}"/misc/completions.bash )
+ZSH_COMPLETIONS=( "${WORK}"/misc/completions.zsh )
+
+src_prepare() {
+    default
+    # Paludis manages completion files
+    edo sed -i '/bash/d;/fish/d;/zsh/d' "${WORK}"/Makefile
+}
+
+src_compile() {
+    # Prevent defining CLIFM_DATADIR as /usr/local/share
+    emake DATADIR=/usr/share
+}
+
+src_install() {
+    emake install \
+          DATADIR=/usr/share \
+          DESTDIR="${IMAGE}" \
+          MANDIR=/usr/share/man \
+          PREFIX=/usr/$(exhost --target)
+
+    bash-completion_src_install
+    zsh-completion_src_install
+    if option fish-completion; then
+        insinto /usr/share/fish
+        newins "${WORK}"/misc/completions.fish ${PN}.fish
+    fi
+}
+

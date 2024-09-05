@@ -29,9 +29,7 @@ DEPENDENCIES="
         sys-fs/squashfs-tools
         virtual/coreutils
     run:
-        dev-libs/at-spi2-atk
-        dev-libs/at-spi2-core
-        dev-libs/atk
+        dev-libs/at-spi2-core[>=2.52.0]
         dev-libs/expat
         dev-libs/glib:2
         dev-libs/nspr

@@ -1,0 +1,26 @@
+# Copyright 2019 Paul Mulders <justinkb@gmail.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require github [ user=munt project=munt tag=lib${PN}_${PV//./_} ] cmake
+
+SUMMARY="Library for emulating the Roland MT-32, CM-32L, CM-64 and LAPC-I"
+
+LICENCES="
+    || ( LGPL-2.1 LGPL-3 )
+"
+SLOT="0"
+PLATFORMS="~amd64"
+MYOPTIONS=""
+
+DEPENDENCIES=""
+
+CMAKE_SOURCE="${WORKBASE}"/munt-lib${PN}_${PV//./_}/mt32emu
+
+src_install() {
+    cmake_src_install
+
+    # Remove some docs which are already installed via emagicdocs into a more
+    # appropriate location
+    edo rm -rf "${IMAGE}"/usr/share/doc/munt
+}
+

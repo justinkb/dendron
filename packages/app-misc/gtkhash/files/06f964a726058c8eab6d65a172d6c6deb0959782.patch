@@ -1,0 +1,108 @@
+Source/Upstream: Yes, fixed in git master
+Reason: Fix build with mbedtls 3
+
+From 06f964a726058c8eab6d65a172d6c6deb0959782 Mon Sep 17 00:00:00 2001
+From: Tristan Heaven <tristan@tristanheaven.net>
+Date: Tue, 8 Sep 2026 22:32:48 +0100
+Subject: [PATCH] Fix building with mbedtls-3 (fixes #163)
+
+---
+ meson.build                 |  8 +++++---
+ src/hash/hash-lib-mbedtls.c | 26 ++++++++++++++++++--------
+ 2 files changed, 23 insertions(+), 11 deletions(-)
+
+diff --git a/meson.build b/meson.build
+index 543ad42b..c87328c1 100644
+--- a/meson.build
++++ b/meson.build
+@@ -127,6 +127,10 @@ mbedtls = get_option('mbedtls') ? \
+     cc.find_library('mbedcrypto', has_headers: 'mbedtls/md.h') : no_dep
+ 
+ config.set10('ENABLE_MBEDTLS', get_option('mbedtls'))
++detected_mbedtls_functions = []
++if cc.has_header_symbol('mbedtls/md.h', 'MBEDTLS_MD_CAN_SHA3_512')
++    detected_mbedtls_functions += [ 'SHA3-224', 'SHA3-256', 'SHA3-384', 'SHA3-512' ]
++endif
+ 
+ ##### Nettle
+ nettle = get_option('nettle') ? dependency('nettle') : no_dep
+@@ -248,9 +252,7 @@ linux_crypto_funcs = [
+     'XXH64',
+ ]
+ 
+-mbedtls_funcs = [
+-    'MD2',
+-    'MD4',
++mbedtls_funcs = detected_mbedtls_functions + [
+     'MD5',
+     'RIPEMD160',
+     'SHA1',
+diff --git a/src/hash/hash-lib-mbedtls.c b/src/hash/hash-lib-mbedtls.c
+index 2e112504..3614ad4e 100644
+--- a/src/hash/hash-lib-mbedtls.c
++++ b/src/hash/hash-lib-mbedtls.c
+@@ -1,5 +1,5 @@
+ /*
+- *   Copyright (C) 2007-2016 Tristan Heaven <tristan@tristanheaven.net>
++ *   Copyright (C) 2007-2026 Tristan Heaven <tristan@tristanheaven.net>
+  *
+  *   This file is part of GtkHash.
+  *
+@@ -36,18 +36,13 @@ HASH_LIB_DECL(mbedtls)
+ 
+ struct hash_lib_mbedtls_s {
+ 	mbedtls_md_context_t ctx;
++	mbedtls_md_type_t type;
+ };
+ 
+ static bool gtkhash_hash_lib_mbedtls_set_type(const enum hash_func_e id,
+ 	mbedtls_md_type_t *type)
+ {
+ 	switch (id) {
+-		case HASH_FUNC_MD2:
+-			*type = MBEDTLS_MD_MD2;
+-			break;
+-		case HASH_FUNC_MD4:
+-			*type = MBEDTLS_MD_MD4;
+-			break;
+ 		case HASH_FUNC_MD5:
+ 			*type = MBEDTLS_MD_MD5;
+ 			break;
+@@ -69,6 +64,20 @@ static bool gtkhash_hash_lib_mbedtls_set_type(const enum hash_func_e id,
+ 		case HASH_FUNC_SHA512:
+ 			*type = MBEDTLS_MD_SHA512;
+ 			break;
++#ifdef MBEDTLS_MD_CAN_SHA3_512
++		case HASH_FUNC_SHA3_224:
++			*type = MBEDTLS_MD_SHA3_224;
++			break;
++		case HASH_FUNC_SHA3_256:
++			*type = MBEDTLS_MD_SHA3_256;
++			break;
++		case HASH_FUNC_SHA3_384:
++			*type = MBEDTLS_MD_SHA3_384;
++			break;
++		case HASH_FUNC_SHA3_512:
++			*type = MBEDTLS_MD_SHA3_512;
++			break;
++#endif
+ 		default:
+ 			return false;
+ 	}
+@@ -103,6 +112,7 @@ void gtkhash_hash_lib_mbedtls_start(struct hash_func_s *func)
+ 	mbedtls_md_type_t type;
+ 	if (!gtkhash_hash_lib_mbedtls_set_type(func->id, &type))
+ 		g_assert_not_reached();
++	LIB_DATA->type = type;
+ 
+ 	mbedtls_md_init(&LIB_DATA->ctx);
+ 
+@@ -129,7 +139,7 @@ void gtkhash_hash_lib_mbedtls_stop(struct hash_func_s *func)
+ uint8_t *gtkhash_hash_lib_mbedtls_finish(struct hash_func_s *func,
+ 	size_t *size)
+ {
+-	*size = mbedtls_md_get_size(LIB_DATA->ctx.md_info);
++	*size = mbedtls_md_get_size(mbedtls_md_info_from_type(LIB_DATA->type));
+ 	uint8_t *digest = g_malloc(*size);
+ 
+ 	if (mbedtls_md_finish(&LIB_DATA->ctx, digest) != 0)

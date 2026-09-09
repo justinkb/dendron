@@ -45,6 +45,10 @@ DEPENDENCIES="
         )
 "
 
+DEFAULT_SRC_PREPARE_PATCHES=(
+    "${FILES}"/06f964a726058c8eab6d65a172d6c6deb0959782.patch
+)
+
 MESON_SRC_CONFIGURE_PARAMS=(
     -Dappstream=false
     -Dbuild-caja=false
